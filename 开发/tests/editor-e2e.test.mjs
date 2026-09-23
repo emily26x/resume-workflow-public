@@ -1,0 +1,94 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
+import { chromium } from "playwright";
+import { findBrowserExecutable } from "../src/delivery.mjs";
+import { startServer } from "../src/server.mjs";
+
+test("switches templates under one second and preserves edits", { skip: !findBrowserExecutable(), timeout: 60_000 }, async (context) => {
+  process.env.RESUME_WORKFLOW_CONFIG_DIR = mkdtempSync(join(tmpdir(), "resume-workflow-test-"));
+  const { server, editorUrl } = await startServer({ inputPath: resolve(import.meta.dirname, "../../示例资料/排版案例/resume-medium.md"), port: 0 });
+  const browser = await chromium.launch({ headless: true, executablePath: findBrowserExecutable() });
+  context.after(async () => { await browser.close(); await new Promise((done) => server.close(done)); });
+  const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
+  await page.goto(editorUrl);
+  await page.locator("#skipSetup").click();
+  await page.locator('.template-list [data-template="classic"].active').waitFor();
+  const frame = page.frameLocator("#previewFrame");
+  assert.equal(await page.locator("#showPhotoToggle").isEnabled(), true);
+  assert.equal(await page.locator("#showPhotoToggle").isChecked(), false);
+  assert.equal(await frame.locator(".portrait").isHidden(), true);
+  await page.locator("#showPhotoToggle").check();
+  assert.equal(await frame.locator(".portrait").isVisible(), true);
+  const education = frame.locator('li[data-content-id="section-0-entry-0-block-0"]');
+  await education.evaluate((node) => {
+    node.focus();
+    const range = node.ownerDocument.createRange();
+    range.setStart(node.firstChild, 0); range.setEnd(node.firstChild, 4);
+    const selection = node.ownerDocument.defaultView.getSelection();
+    selection.removeAllRanges(); selection.addRange(range);
+  });
+  await page.locator("#boldButton").click();
+  assert.equal(await education.evaluate((node) => node.ownerDocument.defaultView.getSelection().toString()), "信息管理");
+  await page.locator("#boldButton").click();
+  assert.equal(await education.locator("strong").count(), 0);
+  assert.equal(await education.evaluate((node) => node.ownerDocument.defaultView.getSelection().toString()), "信息管理");
+  await page.locator("#boldButton").click();
+  assert.equal(await education.locator("strong").textContent(), "信息管理");
+  assert.equal(await education.locator("b,span[style]").count(), 0);
+  const weights = await frame.locator("body").evaluate(() => [
+    getComputedStyle(document.querySelector('li[data-content-id="section-0-entry-0-block-0"] strong')).fontWeight,
+    getComputedStyle(document.querySelector('.main-column strong') || document.querySelector('.entry strong:not(li[data-content-id="section-0-entry-0-block-0"] strong)')).fontWeight,
+  ]);
+  assert.deepEqual(weights, ["700", "700"]);
+  await frame.locator('[data-content-id="name"]').fill("林知夏（编辑测试）");
+  await page.locator("#bodySizeInput").fill("10");
+  const sizes = await frame.locator("body").evaluate(() => [getComputedStyle(document.querySelector(".entry-heading h3")).fontSize, getComputedStyle(document.querySelector(".entry-date")).fontSize, getComputedStyle(document.body).fontSize]);
+  assert.deepEqual(sizes, [sizes[2], sizes[2], sizes[2]]);
+  await page.locator('.template-list [data-template="dual"]').click();
+  await frame.locator("body.template-dual").waitFor();
+  await assert.doesNotReject(() => frame.locator('[data-content-id="name"]').waitFor());
+  assert.equal(await frame.locator('[data-content-id="name"]').textContent(), "林知夏（编辑测试）");
+  assert.equal(await frame.locator(".portrait").isVisible(), true);
+  const dualPhotoPadding = await frame.locator(".resume-header").evaluate((node) => Number.parseFloat(getComputedStyle(node).paddingLeft));
+  await page.locator("#showPhotoToggle").uncheck();
+  const dualHiddenPadding = await frame.locator(".resume-header").evaluate((node) => Number.parseFloat(getComputedStyle(node).paddingLeft));
+  assert.ok(dualHiddenPadding < dualPhotoPadding);
+  await page.locator("#showPhotoToggle").check();
+  const metric = await page.locator("#switchMetric").textContent();
+  const milliseconds = Number(metric.match(/(\d+) ms/)?.[1]);
+  assert.ok(milliseconds < 1000, metric);
+  process.stdout.write(`模板切换实测：${metric}\n`);
+  await page.locator('.template-list [data-template="blue"]').click();
+  await frame.locator("body.template-blue").waitFor();
+  const bluePhotoPadding = await frame.locator(".resume-header").evaluate((node) => Number.parseFloat(getComputedStyle(node).paddingRight));
+  await page.locator("#showPhotoToggle").uncheck();
+  const blueHiddenPadding = await frame.locator(".resume-header").evaluate((node) => Number.parseFloat(getComputedStyle(node).paddingRight));
+  assert.ok(blueHiddenPadding < bluePhotoPadding);
+  await page.locator("#showPhotoToggle").check();
+  assert.equal(await frame.locator('[data-content-id="name"]').textContent(), "林知夏（编辑测试）");
+  await page.locator('.template-list [data-template="classic"]').click();
+  assert.equal(await page.locator("#bodySizeInput").inputValue(), "10");
+  await page.reload();
+  await page.locator("#showPhotoToggle").waitFor();
+  assert.equal(await page.locator("#showPhotoToggle").isChecked(), true);
+  assert.equal(await frame.locator(".portrait").isVisible(), true);
+  assert.equal(await education.locator("strong").textContent(), "信息管理");
+});
+
+test("disables the photo switch when the source has no photo", { skip: !findBrowserExecutable(), timeout: 60_000 }, async (context) => {
+  process.env.RESUME_WORKFLOW_CONFIG_DIR = mkdtempSync(join(tmpdir(), "resume-workflow-test-"));
+  const directory = mkdtempSync(join(tmpdir(), "resume-without-photo-"));
+  const inputPath = join(directory, "resume.md");
+  const source = readFileSync(resolve(import.meta.dirname, "../../示例资料/排版案例/resume-medium.md"), "utf8").replace(/^photo:.*\n/m, "");
+  writeFileSync(inputPath, source, "utf8");
+  const { server, editorUrl } = await startServer({ inputPath, port: 0 });
+  const browser = await chromium.launch({ headless: true, executablePath: findBrowserExecutable() });
+  context.after(async () => { await browser.close(); await new Promise((done) => server.close(done)); });
+  const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
+  await page.goto(editorUrl);
+  assert.equal(await page.locator("#showPhotoToggle").isDisabled(), true);
+  assert.equal(await page.locator("#photoHint").textContent(), "源文件未配置证件照。");
+});

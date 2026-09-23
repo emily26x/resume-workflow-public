@@ -1,0 +1,69 @@
+@page { size: A4; margin: 0; }
+:root { --body-size: 9.4pt; --body-leading: 1.42; --section-gap: 3mm; --entry-gap: 2mm; --ink: #111; --muted: #4b5563; --accent: #111; }
+* { box-sizing: border-box; }
+html, body { width: 210mm; min-height: 297mm; margin: 0; background: #fff; }
+body { color: var(--ink); font-family: "Times New Roman", "Songti SC", "STSong", "SimSun", serif; font-size: var(--body-size); line-height: var(--body-leading); }
+.resume-sheet { position: relative; width: 210mm; height: 297mm; overflow: hidden; padding: 13mm 14mm 12mm; background: #fff; }
+.resume-header { display: flex; align-items: center; justify-content: space-between; gap: 8mm; min-height: 26mm; }
+.identity { min-width: 0; flex: 1; }
+h1 { margin: 0; font-size: 22pt; line-height: 1.05; letter-spacing: .03em; }
+.target-role { margin-top: 2mm; color: var(--muted); font-size: 10.5pt; font-weight: 700; }
+.contact { margin-top: 2.3mm; font-size: 8.6pt; word-break: break-word; }
+.summary { margin: 2mm 0 0; color: var(--muted); }
+.portrait { width: 23mm; height: 30mm; flex: none; object-fit: cover; object-position: center; }
+.resume-section { margin-top: var(--section-gap); break-inside: avoid; }
+.resume-section h2 { display: flex; align-items: center; margin: 0 0 1.5mm; font-size: 11pt; line-height: 1.15; }
+.section-label { font-weight: 800; letter-spacing: .08em; }
+.entry { margin-top: var(--entry-gap); break-inside: avoid; }
+.entry:first-of-type { margin-top: 0; }
+.entry-heading { display: flex; justify-content: space-between; gap: 5mm; align-items: baseline; }
+.entry-heading h3 { margin: 0; font-size: var(--body-size); line-height: 1.25; }
+.entry-date { flex: none; font-weight: 700; font-size: var(--body-size); }
+strong, b { font-weight: 700; }
+p { margin: 1mm 0 0; }
+ul { margin: .8mm 0 0; padding-left: 4.6mm; }
+li { margin: .45mm 0 0; padding-left: .5mm; }
+a { color: inherit; text-decoration: underline; text-underline-offset: 1px; }
+[data-editable]:focus { outline: 1px dashed #d08400; outline-offset: 1px; background: #fff7dc; }
+.photo-hidden .portrait { display: none; }
+
+/* 经典黑白：单栏、方形照片、黑色章节标签。 */
+.template-classic .resume-header { padding-bottom: 2.5mm; border-bottom: .35mm solid #222; }
+.template-classic .resume-section h2::after { content: ""; height: .3mm; flex: 1; margin-left: 2mm; background: #222; }
+.template-classic .section-label { min-width: 25mm; padding: 1.2mm 3mm 1.1mm; color: #fff; background: #111; clip-path: polygon(0 0, 88% 0, 100% 100%, 0 100%); }
+
+/* 灰白双栏：主内容优先出现在 DOM 中，保证 PDF 文本读取先读主要经历。 */
+.template-dual { --accent: #222; --section-gap: 3.2mm; --entry-gap: 2.1mm; }
+.template-dual .resume-sheet { padding: 12mm 12mm 11mm; }
+.template-dual .resume-header { margin: -12mm -12mm 6mm; min-height: 46mm; padding: 8mm 18mm 6mm 69mm; background: #f0f0f0; }
+.template-dual.photo-hidden .resume-header { padding-left: 18mm; }
+.template-dual .portrait { position: absolute; z-index: 2; top: 6mm; left: 17mm; width: 39mm; height: 39mm; border: 1.4mm solid #fff; border-radius: 50%; box-shadow: 0 0 0 .4mm #cfcfcf; }
+.template-dual h1 { font-size: 24pt; }
+.template-dual .dual-grid { display: grid; grid-template-columns: 1fr 52mm; grid-template-areas: "main side"; gap: 6mm; align-items: start; }
+.template-dual .main-column { grid-area: main; }
+.template-dual .side-column { grid-area: side; min-height: 226mm; padding: 2mm 4mm 5mm; background: #f2f2f2; }
+.template-dual .resume-section h2 { padding-bottom: 1.2mm; border-bottom: .35mm solid #c7c7c7; }
+.template-dual .section-label::after { content: attr(data-en); margin-left: 2mm; color: #999; font-size: 6.5pt; letter-spacing: .08em; }
+.template-dual .side-column .resume-section { margin-top: 5mm; }
+.template-dual .side-column .resume-section:first-child { margin-top: 0; }
+.template-dual .side-column .entry-heading { display: block; }
+.template-dual .side-column .entry-date { display: block; margin-top: .5mm; }
+.template-dual .empty-side { margin: 2mm; color: #aaa; font-size: 8pt; }
+
+/* 蓝灰单栏：横向色条与圆形头像。 */
+.template-blue { --accent: #8da0b8; }
+.template-blue .resume-sheet { padding: 0 14mm 12mm; }
+.template-blue .resume-header { position: relative; min-height: 47mm; margin: 0 -14mm 6mm; padding: 10mm 55mm 7mm 17mm; background: #dce2e9; }
+.template-blue.photo-hidden .resume-header { padding-right: 17mm; }
+.template-blue .portrait { position: absolute; z-index: 2; top: 6mm; right: 14mm; width: 34mm; height: 34mm; border: 1mm solid #91a3bb; border-radius: 50%; }
+.template-blue h1 { font-size: 19pt; }
+.template-blue .resume-section h2 { height: 6.5mm; margin-left: -14mm; margin-right: -14mm; padding: 0 14mm; background: linear-gradient(90deg, #8da0b8 0 35mm, #d6dde5 35mm 100%); }
+.template-blue .section-label { min-width: 27mm; color: #fff; }
+.template-blue .entry, .template-blue .resume-section > p, .template-blue .resume-section > ul { margin-left: 2mm; margin-right: 2mm; }
+
+@media screen {
+  html { width: 100%; min-height: 100%; background: #e5e7eb; }
+  body { width: 100%; min-height: 100vh; padding: 24px 0; background: #e5e7eb; overflow-x: auto; }
+  .resume-sheet { margin: 0 auto; box-shadow: 0 2px 16px #0002; }
+}
+@media print { [data-editable]:focus { outline: none; background: transparent; } }

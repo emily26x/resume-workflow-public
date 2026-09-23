@@ -1,0 +1,24 @@
+{
+  "name": "resume-workflow",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A local, fact-first resume workflow for Codex, Claude Code, and OpenCode",
+  "scripts": {
+    "check": "node 开发/src/cli.mjs check",
+    "privacy-check": "node 开发/scripts/privacy-check.mjs",
+    "editor": "node 开发/src/cli.mjs editor",
+    "test": "node --test 开发/tests/*.test.mjs",
+    "test:opencode": "node 开发/scripts/check-opencode.mjs",
+    "previews": "node 开发/scripts/generate-previews.mjs",
+    "install-browser": "node 开发/src/install-browser.mjs"
+  },
+  "dependencies": {
+    "pdfjs-dist": "6.2.108",
+    "playwright": "1.63.0",
+    "sharp": "0.35.4"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  }
+}

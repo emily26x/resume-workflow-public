@@ -1,0 +1,16 @@
+node_modules/
+.resume-workflow/
+**/resume.pdf
+**/resume.png
+.DS_Store
+coverage/
+
+# 每位使用者的真实资料与正式输出，仅保留公开入口和示例模板
+/原始材料/*
+!/原始材料/README.md
+/简历事实库/*
+!/简历事实库/README.md
+!/简历事实库/_index.example.md
+/岗位档案/*
+!/岗位档案/README.md
+!/岗位档案/_index.example.md

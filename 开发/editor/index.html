@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>简历交付编辑器</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span>简</span><div><strong>简历交付编辑器</strong><small>内容已定稿 · 样式随时切换</small></div></div>
+    <div class="actions"><span id="saveState">正在载入</span><button id="boldButton" class="button ghost">B 加粗</button><button id="exportButton" class="button primary">生成 PDF 和图片</button></div>
+  </header>
+  <main class="shell">
+    <aside class="sidebar">
+      <section class="card intro"><span class="eyebrow">FINAL COPY</span><h1>内容与样式分开</h1><p>直接修改右侧文字和加粗。编辑内容保存在当前浏览器会话，不回写 <code>resume.md</code>。</p></section>
+      <section class="card"><div class="card-head"><div><span class="eyebrow">TEMPLATE</span><h2>简历样式</h2></div><button id="setDefaultButton" class="text-button">设为默认</button></div><div id="templateList" class="template-list"></div><p id="switchMetric" class="hint">切换不调用 AI，也不会改动内容。</p></section>
+      <section class="card"><span class="eyebrow">CONTENT</span><h2>内容显示</h2><label class="toggle-row"><span>显示证件照</span><input id="showPhotoToggle" type="checkbox"></label><p id="photoHint" class="hint">仅影响当前浏览器会话和本次导出。</p></section>
+      <section class="card"><div class="card-head"><div><span class="eyebrow">TYPE</span><h2>排版微调</h2></div><button id="resetTypographyButton" class="text-button">恢复推荐值</button></div>
+        <label><span>正文字号 <output id="bodySizeOutput"></output></span><input id="bodySizeInput" type="range" min="8.8" max="12" step="0.01"></label>
+        <label><span>正文行距 <output id="leadingOutput"></output></span><input id="leadingInput" type="range" min="1.15" max="1.9" step="0.001"></label>
+        <label><span>章节间距 <output id="sectionGapOutput"></output></span><input id="sectionGapInput" type="range" min="0.8" max="7" step="0.01"></label>
+        <label><span>经历间距 <output id="entryGapOutput"></output></span><input id="entryGapInput" type="range" min="0.6" max="5" step="0.01"></label>
+      </section>
+      <section id="resultCard" class="card result" hidden><span class="eyebrow">READY</span><h2>文件已生成</h2><p id="qaSummary"></p><div><a id="pdfLink" target="_blank">打开 PDF</a><a id="pngLink" target="_blank">打开 PNG</a></div></section>
+    </aside>
+    <section class="workspace"><div class="workspace-bar"><div id="pageStatus" class="status"><i></i><span>正在载入预览</span></div><p>发生裁切或溢出时会阻止导出</p></div><div class="stage"><iframe id="previewFrame" title="A4 简历预览"></iframe></div></section>
+  </main>
+  <dialog id="setupDialog"><form method="dialog"><span class="eyebrow">FIRST RUN</span><h2>设置简历偏好</h2><p>选择一套默认样式，并设置以后生成 Markdown 时使用的显示偏好。进入编辑器后仍可切换模板。</p><div id="setupTemplates" class="setup-templates"></div><fieldset class="setup-preferences"><legend>内容显示</legend><label><input id="includePhotoInput" type="checkbox"> 简历包含已确认的照片</label><label><input id="showCityInput" type="checkbox"> 显示已确认的城市</label><label><span>作品链接</span><select id="linkStyleInput"><option value="label">显示可读名称</option><option value="url">显示完整 URL</option></select></label></fieldset><button id="skipSetup" value="skip" class="button ghost wide">跳过，使用隐私优先默认值</button></form></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
