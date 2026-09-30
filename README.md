@@ -1,6 +1,6 @@
 # 简历工作流
 
-用 Codex、Claude Code 或 OpenCode 整理自己的经历，根据招聘要求定制简历，再排版导出 PDF。旧简历里的内容先由你确认，AI 才能用于新简历。
+用 Codex、Claude Code、OpenCode 或 WorkBuddy 整理自己的经历，根据招聘要求定制简历，再排版导出 PDF。旧简历里的内容先由你确认，AI 才能用于新简历。
 
 ## 第一次使用
 
@@ -51,6 +51,7 @@
 - `简历事实库/` 中的事实正文与本地 `_index.md`；
 - `岗位档案/` 中的公司、岗位、本地索引、Markdown、HTML、PDF 和 PNG；
 - `.resume-workflow/` 中的本地偏好。
+- `.workbuddy/` 中 WorkBuddy 在本机生成的任务记忆与配置。
 
 公开仓库只保留 README、`_index.example.md` 和虚构的 `示例资料/`。不要使用 `git add -f` 强制提交私有目录，不要删除相关忽略规则，也不要把真实资料复制到 `示例资料/`。推送前运行 `npm run privacy-check`；该命令会分别检查已跟踪文件和暂存区，并阻断未经复核的二进制文件，再运行 `npm test` 完成其余验证。
 
@@ -62,7 +63,7 @@
 
 支持中文单页 A4，导出 PDF 和 2480 × 3508 PNG。编辑器修字和排版保存在当前浏览器会话，关闭后可能丢失，请及时导出。HTML 页面文件不是完整编辑器，具体保存边界见[安装与使用](使用说明/安装与使用.md)。
 
-根目录的 `AGENTS.md`、`CLAUDE.md` 和隐藏技能目录供 AI 工具读取；`package.json` 与锁文件用于安装编辑器。普通用户无需手动修改它们。
+根目录的 `AGENTS.md`、`CLAUDE.md`、`CODEBUDDY.md` 和隐藏技能目录供 AI 工具读取；`package.json` 与锁文件用于安装编辑器。普通用户无需手动修改它们。
 
 ## 授权
 

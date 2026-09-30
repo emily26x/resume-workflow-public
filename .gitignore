@@ -1,5 +1,6 @@
 node_modules/
 .resume-workflow/
+.workbuddy/
 **/resume.pdf
 **/resume.png
 .DS_Store

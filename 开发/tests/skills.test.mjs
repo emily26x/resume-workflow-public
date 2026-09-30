@@ -18,8 +18,29 @@ test("ships four lowercase skills with mirrored Codex and Claude rules", () => {
     assert.equal(agents, claude, `${skill} has platform drift`);
     assert.match(agents, new RegExp(`^---\\nname: ${skill}\\n`));
     assert.match(agents, /description: .*时使用/);
-    assert.match(agents, /compatibility: Codex, Claude Code, OpenCode/);
+    assert.match(agents, /compatibility: Codex, Claude Code, OpenCode, WorkBuddy/);
   }
+});
+
+test("WorkBuddy entry discovers the four skills and delegates to canonical rules", () => {
+  const entry = read("CODEBUDDY.md");
+  assert.match(entry, /AGENTS\.md/);
+  assert.match(entry, /使用说明\/workflow\.md/);
+  assert.match(entry, /真实资料只放在 Git 忽略/);
+  assert.match(entry, /HTTP 编辑器地址/);
+
+  for (const skill of skills) {
+    const wrapper = read(`.codebuddy/skills/${skill}/SKILL.md`);
+    const canonical = read(`.agents/skills/${skill}/SKILL.md`);
+    assert.match(wrapper, new RegExp(`^---\\nname: ${skill}\\n`));
+    assert.equal(wrapper.match(/^description: (.*)$/m)?.[1], canonical.match(/^description: (.*)$/m)?.[1]);
+    assert.match(wrapper, new RegExp(`\\.agents/skills/${skill}/SKILL\\.md`));
+    assert.match(wrapper, /完整读取/);
+  }
+  for (const skill of ["job-greeting", "interview-introduction"]) {
+    assert.doesNotMatch(read(`.agents/skills/${skill}/SKILL.md`), /创建或更新内容时.*索引规范/);
+  }
+  assert.match(read(".agents/skills/resume-workflow/SKILL.md"), /先提供.*HTTP 编辑器地址/);
 });
 
 test("routes every public job-seeking intent to one skill", () => {
@@ -90,7 +111,7 @@ test("keeps conversation-only outputs and candidate facts outside deliverables",
 });
 
 test("contains no private repository paths or private company rules", () => {
-  const publicText = ["AGENTS.md", "CLAUDE.md", "README.md", "使用说明/workflow.md", "使用说明/求职内容工作流协议.md", "使用说明/markdown-contract.md", ...skills.flatMap((skill) => [`.agents/skills/${skill}/SKILL.md`, `.claude/skills/${skill}/SKILL.md`])].map(read).join("\n");
+  const publicText = ["AGENTS.md", "CLAUDE.md", "CODEBUDDY.md", "README.md", "使用说明/workflow.md", "使用说明/求职内容工作流协议.md", "使用说明/markdown-contract.md", ...skills.flatMap((skill) => [`.agents/skills/${skill}/SKILL.md`, `.claude/skills/${skill}/SKILL.md`, `.codebuddy/skills/${skill}/SKILL.md`])].map(read).join("\n");
   const forbidden = ["Ai" + "Note", "wang" + "dadou", "/" + "Users/", "wiki/6_" + "求职", "tools/" + "resume/", "log" + ".md", "字节" + "跳动", "饿了" + "么", "S" + "BI"];
   for (const value of forbidden) assert.equal(publicText.includes(value), false, `private marker found: ${value}`);
 });
@@ -108,6 +129,7 @@ test("keeps every user's local resume data outside Git by default", () => {
     "岗位档案/2026/2026-09-23-真实公司-真实岗位/resume.pdf",
     "岗位档案/2026/2026-09-23-真实公司-真实岗位/resume.png",
     ".resume-workflow/preferences.json",
+    ".workbuddy/memory/2026-09-30.md",
   ];
   for (const path of privatePaths) {
     const result = spawnSync("git", ["check-ignore", "-q", path], { cwd: root });

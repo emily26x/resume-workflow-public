@@ -1,9 +1,9 @@
 ---
 name: resume-workflow
-description: 当用户要导入旧简历、初始化或确认简历事实库、设置简历偏好、打开编辑器、切换模板，或导出 PDF/PNG 时使用。适用于 Codex、Claude Code 和 OpenCode。
+description: 当用户要导入旧简历、初始化或确认简历事实库、设置简历偏好、打开编辑器、切换模板，或导出 PDF/PNG 时使用。适用于 Codex、Claude Code、OpenCode 和 WorkBuddy。
 license: MIT
 metadata:
-  compatibility: Codex, Claude Code, OpenCode
+  compatibility: Codex, Claude Code, OpenCode, WorkBuddy
 ---
 
 # Resume Workflow
@@ -50,11 +50,11 @@ npm run editor -- --input <resume.md>
 
 HTML 修改只保存在当前浏览器会话，不回写 Markdown 或事实库。用户点击导出后，在 Markdown 同级生成一页 A4 `resume.pdf` 和 2480 × 3508 `resume.png`。
 
-生成 HTML 文件后，必须在对话的最终回复中提供可点击的 HTML 文件地址。使用绝对路径 Markdown 链接，例如 `[HTML 简历](/绝对路径/resume.html)`；不能只告知生成成功或只打开预览。
+生成 HTML 文件后，必须在对话的最终回复中提供可点击的 HTML 文件地址。使用绝对路径 Markdown 链接，例如 `[HTML 简历](/绝对路径/resume.html)`；不能只告知生成成功或只打开预览。最终回复先提供完整的 HTTP 编辑器地址，再补充 HTML 文件地址。
 
 交付顺序固定为：生成或修改 Markdown 草稿 → 用户确认本版文案 → 标记 final → 生成 HTML 并启动完整编辑器 → 在对话中提供地址。确认前只交付 Markdown，不生成或更新 HTML、不启动编辑器。之前对其他版本的确认或打开编辑器的要求，不自动适用于新生成的 Markdown 文案；用户可在一次回复中确认文案并要求生成 HTML，无须重复确认。编辑器中的修字、加粗、模板切换和排版调整不需要重新确认 Markdown。
 
-进入交付阶段后，应提供包含模板切换、文字编辑、排版微调和导出控件的完整编辑器，并在最终回复中提供 HTTP 地址；静态 HTML 或 PDF 预览不能替代编辑器。
+进入交付阶段后，应启动包含模板切换、文字编辑、排版微调和导出控件的完整编辑器，并在最终回复中先提供 HTTP 编辑器地址；静态 HTML 或 PDF 预览不能替代编辑器。只交付 `resume.html` 即为未完成交付。
 
 正式使用只读取 `简历事实库/` 中本人已确认的资料，不读取 `示例资料/` 的虚构事实；事实库为空时先引导用户导入并确认资料。
 

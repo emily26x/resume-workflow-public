@@ -14,7 +14,7 @@ const publicPrivatePathExceptions = new Set([
   "岗位档案/_index.example.md",
 ]);
 
-const privateRoots = ["原始材料/", "简历事实库/", "岗位档案/", ".resume-workflow/"];
+const privateRoots = ["原始材料/", "简历事实库/", "岗位档案/", ".resume-workflow/", ".workbuddy/"];
 
 const allowedEmails = new Set([
   "lin.zhixia@example.com",

@@ -1,9 +1,9 @@
 ---
 name: resume-tailor
-description: 当用户提供文字或图片 JD，希望修改简历、定制简历、生成投递版 resume.md 或分析岗位匹配时使用。适用于 Codex、Claude Code 和 OpenCode。
+description: 当用户提供文字或图片 JD，希望修改简历、定制简历、生成投递版 resume.md 或分析岗位匹配时使用。适用于 Codex、Claude Code、OpenCode 和 WorkBuddy。
 license: MIT
 metadata:
-  compatibility: Codex, Claude Code, OpenCode
+  compatibility: Codex, Claude Code, OpenCode, WorkBuddy
 ---
 
 # Resume Tailor

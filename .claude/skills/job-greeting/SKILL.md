@@ -1,9 +1,9 @@
 ---
 name: job-greeting
-description: 当用户要写求职打招呼、联系 HR、生成招聘平台开场白，或根据文字/图片 JD 提炼简短匹配介绍时使用。适用于 Codex、Claude Code 和 OpenCode。
+description: 当用户要写求职打招呼、联系 HR、生成招聘平台开场白，或根据文字/图片 JD 提炼简短匹配介绍时使用。适用于 Codex、Claude Code、OpenCode 和 WorkBuddy。
 license: MIT
 metadata:
-  compatibility: Codex, Claude Code, OpenCode
+  compatibility: Codex, Claude Code, OpenCode, WorkBuddy
 ---
 
 # Job Greeting
@@ -45,5 +45,3 @@ metadata:
 结果只在对话中返回。不得创建或更新简历、事实、JD、报告、索引及其他文件。
 
 正式使用只读取 `简历事实库/` 中本人已确认的资料，不读取 `示例资料/` 的虚构事实；事实库为空时先引导用户导入并确认资料。
-
-创建或更新内容时，按 `使用说明/索引规范.md` 同步维护受影响的各层索引与 updated；created 保持不变。正式岗位档案总索引按年份导航，年度索引列具体简历。交付文件实际生成后才增加对应链接。
