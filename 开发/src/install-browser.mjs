@@ -1,9 +1,13 @@
 import { spawnSync } from "node:child_process";
+import { basename } from "node:path";
 import { findBrowserExecutable } from "./delivery.mjs";
 
 const existing = findBrowserExecutable();
 if (existing) {
-  process.stdout.write(`已找到可用浏览器：${existing}\n`);
+  process.stdout.write(`已找到可用浏览器，将直接复用：${existing}\n本次未下载 Playwright 浏览器。\n`);
+  if (process.platform === "darwin" && basename(existing) === "Google Chrome") {
+    process.stdout.write("在 WorkBuddy 中导出或运行浏览器测试时，系统 Chrome 的临时副本清理可能触发删除授权；请核对路径并逐次允许。\n");
+  }
   process.exit(0);
 }
 
