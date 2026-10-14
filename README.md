@@ -1,6 +1,9 @@
 # 简历工作流
 
-用 Codex、Claude Code、OpenCode 或 WorkBuddy 整理自己的经历，根据招聘要求定制简历，再排版导出 PDF。旧简历里的内容先由你确认，AI 才能用于新简历。
+用 Codex、Claude Code、OpenCode 或 WorkBuddy 修改简历、生成求职打招呼和面试自我介绍。核心亮点有两点：
+
+1. **简历事实库**：将简历内容模块化，解决内容积累和回写问题。
+2. **更适合 AI 的制作流程**：将传统的 Word → PDF 路径改为 Markdown（MD）→ HTML → PDF。
 
 ## 第一次使用
 
